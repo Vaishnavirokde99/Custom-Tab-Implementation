@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Browser Tabs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <ul id="tabs">
+        <li class="tab active">
+            <input type="text" value="https://www.example.com">
+            <button onclick="closeTab(0)">x</button>
+        </li>
+    </ul>
+
+    <div id="content">
+        <iframe src="https://www.example.com"></iframe>
+        <div id="search-bar">
+            <input type="text" id="search-input" placeholder="Search...">
+            <button id="search-btn">Search</button>
+        </div>
+    </div>
+
+    <div id="new-tab-btn" onclick="newTab()">+</div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+       // Model
+       const tabs = [{ url: 'https://www.example.com' }];
+
+// View
+function renderTabs() {
+    const tabsElement = $('#tabs');
+    tabsElement.empty();
+
+    tabs.forEach((tab, index) => {
+        const tabClass = index === 0 ? 'tab active' : 'tab';
+        const tabElement = $(`<li class="${tabClass}"><input type="text" value="${tab.url}" readonly><button onclick="closeTab(${index})">x</button></li>`);
+        tabElement.click(() => switchTab(index));
+        tabsElement.append(tabElement);
+    });
+}
+
+function renderContent() {
+    const contentElement = $('#content');
+    const currentTab = tabs[0];
+    if (currentTab) {
+        const iframeElement = $(`<iframe src="${currentTab.url}"></iframe>`);
+        contentElement.empty().append(iframeElement);
+    } else {
+        contentElement.empty();
+    }
+}
+
+// Controller
+function switchTab(index) {
+    renderTabs();
+    renderContent();
+}
+
+function closeTab(index) {
+    if (tabs.length > 1) {
+        tabs.splice(index, 1);
+        renderTabs();
+        renderContent();
+    }
+}
+
+function newTab() {
+    tabs.push({ url: 'https://www.example.com' }); 
+    renderTabs();
+    renderContent();
+}
+
+$(document).ready(() => {
+    renderTabs();
+    renderContent();
+    
+   
+    $('#search-btn').click(() => {
+        const searchTerm = $('#search-input').val();
+        alert(`Searching for: ${searchTerm}`);
+      
+    });
+}); 
+    </script>
+</body>
+</html>
